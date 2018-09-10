@@ -10,7 +10,7 @@ Installing pyactr-book
 
 Clone this repo, go to the root folder and run:
 
-python setup.py install
+python3 setup.py install
 
 Requirements
 ------------
