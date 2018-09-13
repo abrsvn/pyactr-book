@@ -1,6 +1,6 @@
 from setuptools import setup
 
-VERSION = '0.2.3-1'
+VERSION = '0.2.3'
 
 setup(name='pyactr-book',
       version=VERSION,
