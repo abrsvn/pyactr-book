@@ -104,7 +104,7 @@ class ACTRModel(object):
         start_dm = declarative.DecMem()
         self.decmems = {"decmem": start_dm}
 
-        self.productions = productions.Productions()
+        self.__productions = productions.Productions()
         self.__similarities = {}
 
         self.model_parameters = self.MODEL_PARAMETERS.copy()
@@ -194,12 +194,12 @@ class ACTRModel(object):
         self.visbuffers[name_visual_location] = v2
         return v1, v2
 
-    def set_productions(self, *rules):
+    def productions(self, *rules):
         """
         Creates production rules out of functions. One or more functions can be inserted.
         """
-        self.productions = productions.Productions(*rules)
-        return self.productions
+        self.__productions = productions.Productions(*rules)
+        return self.__productions
 
     def productionstring(self, name='', string='', utility=0, reward=None):
         """
@@ -253,8 +253,8 @@ class ACTRModel(object):
                         raise utilities.ACTRError("The rule string %s is not defined correctly; %s" %(name, e))
                     rhs[each[0]+each[1]] = chunks.makechunk("", type_chunk, **chunk_dict)
             yield rhs
-        self.productions.update({name: {"rule": func, "utility": utility, "reward": reward}})
-        return self.productions[name]
+        self.__productions.update({name: {"rule": func, "utility": utility, "reward": reward}})
+        return self.__productions[name]
 
     def set_similarities(self, chunk, otherchunk, value):
         """
@@ -304,8 +304,8 @@ class ACTRModel(object):
                 self.__buffers["visual"] = vision.Visual(self.__env, dm) #adding vision buffers
                 self.__buffers["visual_location"] = vision.VisualLocation(self.__env, dm) #adding vision buffers
 
-        used_productions = productions.ProductionRules(self.productions, self.__buffers, decmem, self.model_parameters) #only temporarily changed, should be used_productions
+        self.used_productions = productions.ProductionRules(self.__productions, self.__buffers, decmem, self.model_parameters) #only temporarily changed, should be used_productions
 
         chunks.Chunk._similarities = self.__similarities
 
-        return simulation.Simulation(self.__env, realtime, trace, gui, self.__buffers, used_productions, initial_time, environment_process, **kwargs)
+        return simulation.Simulation(self.__env, realtime, trace, gui, self.__buffers, self.used_productions, initial_time, environment_process, **kwargs)

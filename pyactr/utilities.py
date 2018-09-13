@@ -167,7 +167,7 @@ def getchunk():
             + pp.Word("".join([pp.alphanums, "_", '"', "'"])))
     strvalue = pp.QuotedString('"', unquoteResults=False)
     strvalue2 = pp.QuotedString("'", unquoteResults=False)
-    varvalue = pp.Word("".join([pp.alphanums, "_", "\.", ",", "%", "&", "`", "\*", "-"]))
+    varvalue = pp.Word("".join([pp.alphanums, "_"]))
     value = varvalue | special_value | strvalue | strvalue2
     chunk_reader = pp.OneOrMore(pp.Group(slot + value))
     return chunk_reader
@@ -531,10 +531,7 @@ def calculate_strength_association(chunk, otherchunk, dm, strength_of_associatio
                 dm.unrestricted_number_chunks.update({chunk: slots_j})
             else:
                 slots_j = dm.unrestricted_number_chunks[chunk]
-    if not restricted:
-        slots_ij = list(values).count(chunk)
-    else:
-        slots_ij = list(slotvalues).count((restricted, chunk))
+    slots_ij = list(values).count(chunk)
     return strength_of_association - math.log(slots_j/max(1, slots_ij))
 
 def spreading_activation(chunk, buffers, dm, buffer_spreading_activation, strength, restricted=False, only_chunks=True):
