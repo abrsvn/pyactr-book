@@ -12,22 +12,22 @@ dm = regular_grammar.decmem
 
 regular_grammar.goal.add(actr.chunkstring(string="""
     isa         goal_chunk
-    mother      'NP'
+    mother      NP
     state       rule
 """))
 
 regular_grammar.productionstring(name="NP ==> N NP", string="""
     =g>
     isa         goal_chunk
-    mother      'NP'
+    mother      NP
     daughter1   None
     daughter2   None
     state       rule
     ==>
     =g>
     isa         goal_chunk
-    daughter1   'N'
-    daughter2   'NP'
+    daughter1   N
+    daughter2   NP
     state       show
 """)
 

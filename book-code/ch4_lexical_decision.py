@@ -4,8 +4,9 @@ A simple model of lexical decision.
 
 import pyactr as actr
 
-environment = actr.Environment(focus_position=(0,0))
+environment = actr.Environment(focus_position=(320,180))
 lex_decision = actr.ACTRModel(environment=environment,
+                            motor_prepared=True,
                               automatic_visual_search=False)
 
 actr.chunktype("goal", "state")
@@ -16,20 +17,20 @@ for string in {"elephant", "dog", "crocodile"}:
     dm.add(actr.makechunk(typename="word", form=string))
 
 g = lex_decision.goal
-g.add(actr.makechunk(nameofchunk="start",
+g.add(actr.makechunk(nameofchunk="beginning",
                      typename="goal",
                      state="start"))
 
 lex_decision.productionstring(name="find word", string="""
     =g>
     isa     goal
-    state   'start'
+    state   start
     ?visual_location>
     buffer  empty
     ==>
     =g>
     isa     goal
-    state   'attend'
+    state   attend
     +visual_location>
     isa _visuallocation
     screen_x closest
@@ -38,7 +39,7 @@ lex_decision.productionstring(name="find word", string="""
 lex_decision.productionstring(name="attend word", string="""
     =g>
     isa     goal
-    state   'attend'
+    state   attend
     =visual_location>
     isa    _visuallocation
     ?visual>
@@ -46,7 +47,7 @@ lex_decision.productionstring(name="attend word", string="""
     ==>
     =g>
     isa     goal
-    state   'retrieving'
+    state   retrieving
     +visual>
     isa     _visual
     cmd     move_attention
@@ -57,14 +58,14 @@ lex_decision.productionstring(name="attend word", string="""
 lex_decision.productionstring(name="retrieving", string="""
     =g>
     isa     goal
-    state   'retrieving'
+    state   retrieving
     =visual>
     isa     _visual
     value   =val
     ==>
     =g>
     isa     goal
-    state   'retrieval_done'
+    state   retrieval_done
     +retrieval>
     isa     word
     form    =val
@@ -73,35 +74,35 @@ lex_decision.productionstring(name="retrieving", string="""
 lex_decision.productionstring(name="lexeme retrieved", string="""
     =g>
     isa     goal
-    state   'retrieval_done'
+    state   retrieval_done
     ?retrieval>
     buffer  full
     state   free
     ==>
     =g>
     isa     goal
-    state   'done'
+    state   done
     +manual>
     isa     _manual
     cmd     press_key
-    key     'J'
+    key     J
 """)
 
 lex_decision.productionstring(name="no lexeme found", string="""
     =g>
     isa     goal
-    state   'retrieval_done'
+    state   retrieval_done
     ?retrieval>
     buffer  empty
     state   error
     ==>
     =g>
     isa     goal
-    state   'done'
+    state   done
     +manual>
     isa     _manual
     cmd     press_key
-    key     'F'
+    key     F
 """)
 
 word = {1: {'text': 'elephant', 'position': (320, 180)}}

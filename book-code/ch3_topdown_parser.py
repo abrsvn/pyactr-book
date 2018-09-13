@@ -15,72 +15,72 @@ imaginal = parser.set_goal(name="imaginal", delay=0.2)
 
 dm.add(actr.chunkstring(string="""
     isa word
-    form 'Mary'
-    cat 'ProperN'
+    form Mary
+    cat ProperN
 """))
 dm.add(actr.chunkstring(string="""
     isa word
-    form 'Bill'
-    cat 'ProperN'
+    form Bill
+    cat ProperN
 """))
 dm.add(actr.chunkstring(string="""
     isa word
-    form 'likes'
-    cat 'V'
+    form likes
+    cat V
 """))
 
 g.add(actr.chunkstring(string="""
     isa parsing_goal
     task parsing
-    stack_top 'S'
+    stack_top S
 """))
 imaginal.add(actr.chunkstring(string="""
     isa sentence
-    word1 'Mary'
-    word2 'likes'
-    word3 'Bill'
+    word1 Mary
+    word2 likes
+    word3 Bill
 """))
 
 parser.productionstring(name="expand: S ==> NP VP", string="""
     =g>
     isa parsing_goal
     task parsing
-    stack_top 'S'
+    stack_top S
     ==>
     =g>
     isa parsing_goal
-    stack_top 'NP'
-    stack_bottom 'VP'
+    stack_top NP
+    stack_bottom VP
 """)
 
 parser.productionstring(name="expand: NP ==> ProperN", string="""
     =g>
     isa parsing_goal
     task parsing
-    stack_top 'NP'
+    stack_top NP
     ==>
     =g>
     isa parsing_goal
-    stack_top 'ProperN'
+    stack_top ProperN
 """)
 
 parser.productionstring(name="expand: VP ==> V NP", string="""
     =g>
     isa parsing_goal
     task parsing
-    stack_top 'VP'
+    stack_top VP
     ==>
     =g>
     isa parsing_goal
-    stack_top 'V'
-    stack_bottom 'NP'
+    stack_top V
+    stack_bottom NP
 """)
 
 parser.productionstring(name="retrieve: ProperN", string="""
     =g>
     isa parsing_goal
     task parsing
-    stack_top 'ProperN'
+    stack_top ProperN
     =imaginal>
     isa sentence
     word1 =w1
@@ -97,7 +97,7 @@ parser.productionstring(name="retrieve: V", string="""
     =g>
     isa parsing_goal
     task parsing
-    stack_top 'V'
+    stack_top V
     =imaginal>
     isa sentence
     word1 =w1
@@ -130,13 +130,13 @@ parser.productionstring(name="scan: word", string="""
     isa parsing_goal
     task printing
     stack_top =x
-    stack_bottom empty
+    stack_bottom None
     parsed_word =w1
     =imaginal>
     isa sentence
     word1 =w2
     word2 =w3
-    word3 empty
+    word3 None
     ~retrieval>
 """)
 
@@ -146,7 +146,7 @@ parser.productionstring(name="print parsed word", string="""
     task printing
     =imaginal>
     isa sentence
-    word1 ~empty
+    word1 ~None
     ==>
     !g>
     show parsed_word
@@ -162,7 +162,7 @@ parser.productionstring(name="done", string="""
     task printing
     =imaginal>
     isa sentence
-    word1 empty
+    word1 None
     ==>
     =g>
     isa parsing_goal

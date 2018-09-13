@@ -25,12 +25,12 @@ dm.add(carLexeme)
 agreement.goal.add(actr.chunkstring(string="""
     isa goal_lexeme
     task agree
-    category 'verb'"""))
+    category verb"""))
 
 agreement.productionstring(name="retrieve", string="""
     =g>
     isa goal_lexeme
-    category 'verb'
+    category verb
     task agree
     ?retrieval>
     buffer empty
@@ -38,27 +38,27 @@ agreement.productionstring(name="retrieve", string="""
     =g>
     isa goal_lexeme
     task trigger_agreement
-    category 'verb'
+    category verb
     +retrieval>
     isa word
-    category 'noun'
-    synfunction 'subject'
+    category noun
+    synfunction subject
     """)
 
 agreement.productionstring(name="agree", string="""
     =g>
     isa goal_lexeme
     task trigger_agreement
-    category 'verb'
+    category verb
     =retrieval>
     isa word
-    category 'noun'
-    synfunction 'subject'
+    category noun
+    synfunction subject
     number =x
     ==>
     =g>
     isa goal_lexeme
-    category 'verb'
+    category verb
     number =x
     task done
     """)
