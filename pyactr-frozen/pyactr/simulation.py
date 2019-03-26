@@ -24,6 +24,8 @@ import pyactr.utilities as utilities
 import pyactr.vision as vision
 import pyactr.chunks as chunks
 
+Event = utilities.Event
+
 class Simulation(object):
     """
     ACT-R simulations.
@@ -39,7 +41,7 @@ class Simulation(object):
 
         self.__env = environment
         if self.__env:
-            self.__env.gui = gui and GUI #set the gui of the environment in the same way as this one; it is used so that Environment prints its output directly in simpy simulation
+            self.__env.gui = gui and GUI #set the GUI of the environment in the same way as this one; it is used so that Environment prints its output directly in simpy simulation
 
         self.__realtime = realtime
 
@@ -77,7 +79,7 @@ class Simulation(object):
 
         self.__last_event = None #used when stepping thru simulation
 
-        #here below -- simulation values, accesible by user
+        #here below -- simulation values, accessible by user
         self.current_event = None
         self.now = self.__simulation.now
 
@@ -106,7 +108,7 @@ class Simulation(object):
                 event = next(generator)
             except StopIteration:
                 break
-            #this part below ensures automatic bufferring which proceeds independently of PROCEDURAL
+            #this part below ensures automatic buffering which proceeds independently of PROCEDURAL
             for name in self.__buffers:
                 if isinstance(self.__buffers[name], vision.VisualLocation) and self.__buffers[name].environment == self.__env:
                     proc = (name, self.__pr.automatic_search(name, self.__buffers[name], list(self.__env.stimulus.values()), self.__simulation.now))
@@ -164,7 +166,7 @@ class Simulation(object):
                     cont = yield pro
                 except simpy.Interrupt:
                     if not pro.triggered:
-                        warnings.warn("Process in %s interupted" % name)
+                        warnings.warn("Process in %s interrupted" % name)
                         pro.interrupt() #interrupt process
 
                 #if first extra process is followed by another process (returned as cont), do what follows; used only for motor and visual
@@ -181,7 +183,12 @@ class Simulation(object):
         Triggers local process. name is the name of module. generator must only yield Events.
         """
         while True:
-            event = next(generator)
+            try:
+                event = next(generator)
+            except StopIteration:
+                return
+            if not isinstance(event, Event):
+                return event
             try:
                 yield self.__simulation.timeout(event.time-round(self.__simulation.now, 4)) #a hack -- rounded because otherwise there was a very tiny negative delay in some cases
             except simpy.Interrupt:
