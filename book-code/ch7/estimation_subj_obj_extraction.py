@@ -14,8 +14,8 @@ import pymc3 as pm
 from pymc3 import Gamma, Normal, HalfNormal, Deterministic, Uniform, find_MAP,\
                   Slice, sample, summary, Metropolis, traceplot, gelman_rubin
 from pymc3.backends.base import merge_traces
-from pymc3.backends import SQLite
-from pymc3.backends.sqlite import load
+from pymc3.backends import Text
+from pymc3.backends.text import load
 import theano
 import theano.tensor as tt
 from theano.compile.ops import as_op
@@ -175,7 +175,7 @@ def run_self_paced_task():
 def actrmodel_latency(lf, le, rf, emap):
     """
     This function specifies the estimated free parameters inside the act-r
-    model and it envokes the model to record reaction times.       
+    model and it envokes the model to record reaction times.
     The simulated reaction times are returned.
     """
     parser.model_parameters["latency_factor"] = lf
@@ -202,7 +202,7 @@ with parser_with_bayes:
     obj_rt_observed = Normal('obj_rt_observed', mu=obj_mu_rt, sd=10, observed=obj_extraction['rt'])
     # we start the sampling
     step = Metropolis()
-    db = SQLite('subj_obj_extraction.sqlite')
+    db = Text('subj_obj_extraction')
     trace = sample(draws=100, trace=db, njobs=1, step=step, init='auto', tune=10)
     traceplot(trace)
     plt.savefig("subj_obj_extraction_posteriors.pdf")

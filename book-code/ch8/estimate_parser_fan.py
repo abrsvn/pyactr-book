@@ -33,8 +33,8 @@ from pymc3 import Model, Gamma, Normal, HalfNormal, Deterministic,\
                   Uniform, find_MAP, Slice, sample, summary, Metropolis,\
                   traceplot, gelman_rubin
 from pymc3.backends.base import merge_traces
-from pymc3.backends import SQLite
-from pymc3.backends.sqlite import load
+from pymc3.backends import Text
+from pymc3.backends.text import load
 import theano
 import theano.tensor as tt
 from theano.compile.ops import as_op
@@ -157,18 +157,18 @@ with fan_model:
     mu_rt = Deterministic('mu_rt', pyactr_rt)
     rt_observed = Normal('rt_observed', mu=mu_rt, sd=30, observed=RT)
     # Compute posteriors
-    step = Metropolis(fan_model.vars)
-    db = SQLite('fan_chain_5000_draws.sqlite')
+    # step = Metropolis(fan_model.vars)
+    # db = Text('fan_5000_draws')
     #trace = sample(NDRAWS, step=step, trace=db, njobs=1, init='auto', tune=500)
 
 with fan_model:
-    trace = load('./fan_chain_5000_draws.sqlite')
+    trace = load('../../data/fan_5000_draws')
     trace = trace[500:]
 
 traceplot(trace)
-plt.savefig('fan_chain_5000_draws.png')
-plt.savefig('fan_chain_5000_draws.pgf')
-plt.savefig('fan_chain_5000_draws.pdf')
+plt.savefig('fan_5000_draws.png')
+plt.savefig('fan_5000_draws.pgf')
+plt.savefig('fan_5000_draws.pdf')
 
 mu_rt = pd.DataFrame(trace['mu_rt'])
 yerr_rt = [(mu_rt.mean()-mu_rt.quantile(0.025)),\

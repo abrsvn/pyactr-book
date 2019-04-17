@@ -38,8 +38,8 @@ import pymc3 as pm
 from pymc3 import Gamma, Normal, HalfNormal, Deterministic, Uniform, find_MAP,\
                   Slice, sample, summary, Metropolis, traceplot, gelman_rubin
 from pymc3.backends.base import merge_traces
-from pymc3.backends import SQLite
-from pymc3.backends.sqlite import load
+from pymc3.backends import Text
+from pymc3.backends.text import load
 import theano
 import theano.tensor as tt
 from theano.compile.ops import as_op
@@ -277,11 +277,11 @@ with lex_decision_with_bayes:
                            observed=ACCURACY)
     # we start the sampling
     #step = Metropolis()
-    #db = SQLite('lex_dec_pyactr_chain_no_imaginal.sqlite')
+    #db = Text('lex_dec_pyactr_no_imaginal')
     #trace = sample(draws=60000, trace=db, njobs=1, step=step, init='auto')
 
 with lex_decision_with_bayes:
-    trace = load('./data/lex_dec_pyactr_chain_no_imaginal.sqlite')
+    trace = load('../data/lex_dec_pyactr_no_imaginal')
     trace = trace[10500:]
 
 mu_rt = pd.DataFrame(trace['mu_rt'])

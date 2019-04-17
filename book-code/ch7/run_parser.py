@@ -35,7 +35,7 @@ if __name__ == "__main__":
         simulate = 1
 
     stimuli_csv = load_file(SENTENCES, sep=",") #sentences with frequencies
-    
+
     subset_stimuli = stimuli_csv[stimuli_csv.label.isin(['obj_ext'])]
     sentence = subset_stimuli[subset_stimuli.item.isin([1])].word
 

@@ -17,8 +17,8 @@ from pymc3 import Model, Gamma, Normal, HalfNormal, Deterministic,\
                   Uniform, find_MAP, Slice, sample, summary, Metropolis,\
                   traceplot, gelman_rubin
 from pymc3.backends.base import merge_traces
-from pymc3.backends import SQLite
-from pymc3.backends.sqlite import load
+from pymc3.backends import Text
+from pymc3.backends.text import load
 import theano
 import theano.tensor as tt
 from theano.compile.ops import as_op
@@ -165,20 +165,20 @@ if rank == 0: #master
         mu_rt = Deterministic('mu_rt', pyactr_rt)
         rt_observed = Normal('rt_observed', mu=mu_rt, sd=30, observed=RT)
         # Compute posteriors
-        step = Metropolis(parser_model.vars)
-        db = SQLite('parser_model_2000_iterations.sqlite')
-        trace = sample(NDRAWS, step=step, trace=db, njobs=1, start={'le': np.array(0.045)}, tune=int(NDRAWS/10))
+        # step = Metropolis(parser_model.vars)
+        # db = Text('parser_model_2000_iterations')
+        # trace = sample(NDRAWS, step=step, trace=db, njobs=1, start={'le': np.array(0.045)}, tune=int(NDRAWS/10))
 else:
     run_exp(rank)
 
-# with parser_model:
-    # trace = load('./parser_model_2000_iterations.sqlite')
-    # trace = trace[int(NDRAWS/10):]
+with parser_model:
+    trace = load('../../data/parser_model_2000_iterations')
+    trace = trace[int(NDRAWS/10):]
 
-    # traceplot(trace)
-    # plt.savefig('parser_chain_'+str(NDRAWS)+'_draws.pdf')
-    # plt.savefig('parser_chain_'+str(NDRAWS)+'_draws.png')
-    # plt.savefig('parser_chain_'+str(NDRAWS)+'_draws.pgf')
+# traceplot(trace)
+# plt.savefig('parser_'+str(NDRAWS)+'_draws.pdf')
+# plt.savefig('parser_'+str(NDRAWS)+'_draws.png')
+# plt.savefig('parser_'+str(NDRAWS)+'_draws.pgf')
 
 # mu_rt = pd.DataFrame(trace['mu_rt'])
 # yerr_rt = [(mu_rt.mean()-mu_rt.quantile(0.025)),\
