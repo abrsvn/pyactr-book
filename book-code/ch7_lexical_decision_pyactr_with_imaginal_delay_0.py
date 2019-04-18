@@ -300,14 +300,16 @@ with lex_decision_with_bayes:
     mu_prob = Deterministic('mu_prob', 1/(1 + odds_reciprocal))
     prob_observed = Normal('prob_observed', mu=mu_prob, sd=0.01,\
                            observed=ACCURACY)
-    # we start the sampling
+
+#with lex_decision_with_bayes:
     #step = Metropolis()
     #db = Text('lex_dec_pyactr_with_imaginal_delay_0')
     #trace = sample(draws=60000, trace=db, njobs=1, step=step, init='auto')
 
 with lex_decision_with_bayes:
     trace = load('../data/lex_dec_pyactr_with_imaginal_delay_0')
-    trace = trace[10500:]
+
+trace = trace[10500:]
 
 mu_rt = pd.DataFrame(trace['mu_rt'])
 yerr_rt = [(mu_rt.mean()-mu_rt.quantile(0.025)),\
@@ -319,7 +321,7 @@ yerr_prob = [(mu_prob.mean()-mu_prob.quantile(0.025)),\
 
 def generate_lex_dec_pyactr_with_imaginal_delay_0_figure():
     fig, (ax1, ax2) = plt.subplots(ncols=1, nrows=2)
-    fig.set_size_inches(6.0, 8.5)
+    fig.set_size_inches(5.5, 5.5)
     # plot 1: RTs
     ax1.errorbar(RT, mu_rt.mean(), yerr=yerr_rt, marker='o', linestyle='')
     ax1.plot(np.linspace(500, 800, 10), np.linspace(500, 800, 10),\
@@ -340,7 +342,7 @@ def generate_lex_dec_pyactr_with_imaginal_delay_0_figure():
     ax2.grid(b=True, which='minor', color='w', linewidth=1.0)
     # clean up and save
     plt.tight_layout(pad=0.5, w_pad=0.2, h_pad=0.7)
-    plt.savefig('./figures/lex_dec_model_pyactr_with_imaginal_delay_0.pgf')
-    plt.savefig('./figures/lex_dec_model_pyactr_with_imaginal_delay_0.pdf')
+    plt.savefig('../figures/lex_dec_model_pyactr_with_imaginal_delay_0.pgf')
+    plt.savefig('../figures/lex_dec_model_pyactr_with_imaginal_delay_0.pdf')
 
 generate_lex_dec_pyactr_with_imaginal_delay_0_figure()
