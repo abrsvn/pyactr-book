@@ -3,12 +3,12 @@ pyactr-book
 
 Python package to create and run ACT-R cognitive models.
 
-This includes the (frozen) version of pyactr for the "Formal Linguistics and Cognitive Architecture" book, with all the book code included.
+This includes the (frozen) version of pyactr for the "Computational Cognitive Modeling and Linguistic Theory" book, with all the book code included.
 
 Running the code
 ---------------------------
 
-All the code for the book "Formal Linguistics and Cognitive Architecture" is in the folder book-code. In order to run it, you need to install and use pyactr.
+All the code for the book "Computational Cognitive Modeling and Linguistic Theory" is in the folder book-code. In order to run it, you need to install and use pyactr.
 
 Installing and using pyactr -- people familiar with Python
 ----------------------------------------------------------
