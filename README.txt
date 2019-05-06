@@ -10,8 +10,8 @@ Running the code
 
 All the code for the book "Computational Cognitive Modeling and Linguistic Theory" is in the folder book-code. In order to run it, you need to install and use pyactr.
 
-Installing and using pyactr -- people familiar with Python
-----------------------------------------------------------
+Installing and using pyactr on your computer -- people familiar with Python
+---------------------------------------------------------------------------
 
 You have several options. The safest one is to install the pyactr version that is present in this repo (called 'pyactr-frozen'). This is the frozen version that should allow you to run all the code from the book.
 
@@ -46,13 +46,19 @@ This will install pyactr in your Python account (not on your computer).
     g. A console should open. Type:
 import pyactr
 
-If no errors appear, you are set. You might get a warning about the lack of tkinter support and that the simulation GUI is set to false. Please ignore this message.
+If no errors appear, you are set. You might get a warning about the lack of tkinter support and that the simulation GUI is set to false. You can ignore this message.
 
 Throughout the book, we will introduce and discuss various ACT-R models coded in Python. You can either type them in line by line or even better, load them as files in your session on PythonAnywhere. Scripts are uploaded in PythonAnywhere under the tab Files. You should be aware that a free account on PythonAnywhere allows you to run only two consoles, and there is a limit on the amount of CPU you might use per day. The limit should suffice for the tutorials but if you find this is too constraining, you should consider installing Python3 and pyactr on your computer and running scripts directly there.
 
 Most likely, using the version of pyactr that you installed on PythonAnywhere should work fine for all the code in the book. However, what you just installed (pyactr) is an up-to-date package and we cannot promise that all future updates of pyactr will remain compatible with all the code that appeared in this book. If you do encounter a case of incompatibility, please let us know.
 
 The usage of pyactr is explained in the book starting from Chapter 2. All the code discussed in the book can be found here as files in the folder book-code.
+
+If you find you like working with pyactr, we suggest you install it on your computer. You will first have to install Pythoon version 3 on your computer. See here:
+
+https://www.python.org/
+
+After that, you can install pyactr. This is described in the section Installing and using pyactr on your computer, see above.
 
 Documentation
 --------------------------
