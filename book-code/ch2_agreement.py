@@ -5,13 +5,12 @@ We abstract away from syntactic parsing, among other things.
 
 import pyactr as actr
 
-actr.chunktype("word", "phonology, meaning, category, number, synfunction")
+actr.chunktype("word", "meaning, category, number, synfunction")
 actr.chunktype("goal_lexeme", "task, category, number")
 
 carLexeme = actr.makechunk(
     nameofchunk="car",
     typename="word",
-    phonology="/kar/",
     meaning="[[car]]",
     category="noun",
     number="sg",
