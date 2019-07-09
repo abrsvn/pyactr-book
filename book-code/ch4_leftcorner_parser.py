@@ -3,7 +3,6 @@ A left-corner parser.
 """
 
 import pyactr as actr
-from ete3 import Tree
 
 environment = actr.Environment(focus_position=(320, 180))
 
