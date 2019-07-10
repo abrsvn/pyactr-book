@@ -194,7 +194,7 @@ with parser_with_bayes:
     rf = HalfNormal('rf', sd=0.05)
     emap = HalfNormal('emap', sd=1.0)
     # latency likelihood -- this is where pyactr is used
-    pyactr_rt = actrmodel_latency(np.float64(lf), np.float64(le), np.float64(rf), np.float64(emap))
+    pyactr_rt = actrmodel_latency(lf, le, rf, emap)
     subj_mu_rt = Deterministic('subj_mu_rt', pyactr_rt[0])
     subj_rt_observed = Normal('subj_rt_observed', mu=subj_mu_rt, sd=10, observed=subj_extraction['rt'])
     obj_mu_rt = Deterministic('obj_mu_rt', pyactr_rt[1])
