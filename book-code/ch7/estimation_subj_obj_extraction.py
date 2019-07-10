@@ -202,7 +202,7 @@ with parser_with_bayes:
     # we start the sampling
     step = Metropolis()
     db = Text('subj_obj_extraction/')
-    trace = sample(draws=100, trace=db, step=step, cores=1, init='auto', tune=10)
+    trace = sample(draws=100, trace=db, step=step, init='auto', tune=10)
     traceplot(trace)
     plt.savefig("subj_obj_extraction_posteriors.pdf")
     plt.savefig("subj_obj_extraction_posteriors.png")
