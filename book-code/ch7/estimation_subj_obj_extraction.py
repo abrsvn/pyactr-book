@@ -145,13 +145,11 @@ def run_extraction_stimulus(sentence):
             break
 
     final_times = np.array(spacebar_press_times[1:])
-    print("Simulated times for stimulus:")
-    print(final_times)
     return final_times
 
 def run_self_paced_task():
-    subj_predicted_rt = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float32)
-    obj_predicted_rt = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float32)
+    subj_predicted_rt = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float64)
+    obj_predicted_rt = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float64)
 
     subj_idx = 0
     obj_idx = 0
@@ -183,6 +181,7 @@ def actrmodel_latency(lf, le, rf, emap):
     parser.model_parameters["rule_firing"] = rf
     parser.model_parameters["eye_mvt_angle_parameter"] = emap
     predicted_rts = run_self_paced_task()
+    #print(predicted_rts)
     return predicted_rts
 
 stimuli_csv = load_file(SENTENCES, sep=",") #sentences with frequencies
@@ -195,15 +194,15 @@ with parser_with_bayes:
     rf = HalfNormal('rf', sd=0.05)
     emap = HalfNormal('emap', sd=1.0)
     # latency likelihood -- this is where pyactr is used
-    pyactr_rt = actrmodel_latency(lf, le, rf, emap)
+    pyactr_rt = actrmodel_latency(np.float64(lf), np.float64(le), np.float64(rf), np.float64(emap))
     subj_mu_rt = Deterministic('subj_mu_rt', pyactr_rt[0])
     subj_rt_observed = Normal('subj_rt_observed', mu=subj_mu_rt, sd=10, observed=subj_extraction['rt'])
     obj_mu_rt = Deterministic('obj_mu_rt', pyactr_rt[1])
     obj_rt_observed = Normal('obj_rt_observed', mu=obj_mu_rt, sd=10, observed=obj_extraction['rt'])
     # we start the sampling
     step = Metropolis()
-    db = Text('subj_obj_extraction')
-    trace = sample(draws=100, trace=db, njobs=1, step=step, init='auto', tune=10)
+    db = Text('subj_obj_extraction/')
+    trace = sample(draws=100, trace=db, step=step, cores=1, init='auto', tune=10)
     traceplot(trace)
     plt.savefig("subj_obj_extraction_posteriors.pdf")
     plt.savefig("subj_obj_extraction_posteriors.png")
