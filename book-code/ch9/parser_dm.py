@@ -44,11 +44,13 @@ actr.chunktype("drs",
                "dref pred1 pred2 event_arg arg1 arg2 \
                 discourse_status drs embedding_level")
 
-parser = actr.ACTRModel(environment, subsymbolic=True, activation_trace=False,
+parser = actr.ACTRModel(environment, subsymbolic=True,
+                        #activation_trace=False,
                         motor_prepared=True,
                         retrieval_threshold=-4,
                         latency_factor=0.15,
                         latency_exponent=0.05,
+                        emma_noise=False,
                         rule_firing=0.011,
                         buffer_spreading_activation={"discourse_context":2,
                                                      "unresolved_discourse":2},

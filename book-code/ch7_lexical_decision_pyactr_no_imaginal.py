@@ -6,20 +6,20 @@ import warnings
 import sys
 
 import matplotlib as mpl
-mpl.use("pgf")
-pgf_with_pdflatex = {"text.usetex": True, "pgf.texsystem": "pdflatex",
-                     "pgf.preamble": [r"\usepackage{mathpazo}",
-                                      r"\usepackage[utf8x]{inputenc}",
-                                      r"\usepackage[T1]{fontenc}",
-                                      r"\usepackage{amsmath}"],
-                     "axes.labelsize": 8,
-                     "font.family": "serif",
-                     "font.serif":["Palatino"],
-                     "font.size": 8,
-                     "legend.fontsize": 8,
-                     "xtick.labelsize": 8,
-                     "ytick.labelsize": 8}
-mpl.rcParams.update(pgf_with_pdflatex)
+# mpl.use("pgf")
+# pgf_with_pdflatex = {"text.usetex": True, "pgf.texsystem": "pdflatex",
+                     # "pgf.preamble": [r"\usepackage{mathpazo}",
+                                      # r"\usepackage[utf8x]{inputenc}",
+                                      # r"\usepackage[T1]{fontenc}",
+                                      # r"\usepackage{amsmath}"],
+                     # "axes.labelsize": 8,
+                     # "font.family": "serif",
+                     # "font.serif":["Palatino"],
+                     # "font.size": 8,
+                     # "legend.fontsize": 8,
+                     # "xtick.labelsize": 8,
+                     # "ytick.labelsize": 8}
+# mpl.rcParams.update(pgf_with_pdflatex)
 import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 import seaborn as sns
@@ -40,28 +40,29 @@ from pymc3 import Gamma, Normal, HalfNormal, Deterministic, Uniform, find_MAP,\
 from pymc3.backends.base import merge_traces
 from pymc3.backends import Text
 from pymc3.backends.text import load
+from pymc3.backends.text import dump
 import theano
 import theano.tensor as tt
 from theano.compile.ops import as_op
 
 warnings.filterwarnings("ignore")
 
-FREQ = np.array([242, 92.8, 57.7, 40.5, 30.6, 23.4, 19,\
+FREQ = np.array([242, 92.8, 57.7, 40.5, 30.6, 23.4, 19,
                  16, 13.4, 11.5, 10, 9, 7, 5, 3, 1])
-RT = np.array([542, 555, 566, 562, 570, 569, 577, 587,\
-               592, 605, 603, 575, 620, 607, 622, 674])
-ACCURACY = np.array([97.22, 95.56, 95.56, 96.3, 96.11, 94.26,\
-                     95, 92.41, 91.67, 93.52, 91.85, 93.52,\
+RT = np.array([542, 555, 566, 562, 570, 569, 577, 587,
+               592, 605, 603, 575, 620, 607, 622, 674])/1000
+ACCURACY = np.array([97.22, 95.56, 95.56, 96.3, 96.11, 94.26,
+                     95, 92.41, 91.67, 93.52, 91.85, 93.52,
                      91.48, 90.93, 84.44, 74.63])/100
 
 environment = actr.Environment(focus_position=(320, 180))
-lex_decision = actr.ACTRModel(environment=environment,\
-                       subsymbolic=True,\
-                       automatic_visual_search=True,\
-                       activation_trace=False,\
-                       retrieval_threshold=-80,\
+lex_decision = actr.ACTRModel(environment=environment,
+                       subsymbolic=True,
+                       automatic_visual_search=True,
+                       activation_trace=False,
+                       retrieval_threshold=-80,
                        motor_prepared=True,
-                       eye_mvt_scaling_parameter=0.18,\
+                       eye_mvt_scaling_parameter=0.18,
                        emma_noise=False)
 
 actr.chunktype("goal", "state")
@@ -201,7 +202,7 @@ def run_stimulus(word):
     environment.current_focus = [320,180]
     lex_decision.model_parameters['motor_prepared'] = True
 
-    # run new simulation
+    # run new simulation; switch to gui=True to suppress pyactr output when estimating Bayesian model
     lex_dec_sim = lex_decision.simulation(realtime=False, gui=False, trace=False,
               environment_process=environment.environment_process,
               stimuli=stim, triggers='', times=10)
@@ -222,7 +223,7 @@ def run_lex_decision_task():
     """
     sample = []
     for word in ORDERED_FREQ:
-        sample.append(1000*run_stimulus(word))
+        sample.append(run_stimulus(word))
     return sample
 
 @as_op(itypes=[tt.dscalar, tt.dscalar, tt.dscalar, tt.dvector],
@@ -264,7 +265,7 @@ with lex_decision_with_bayes:
         subvector = scaled_time_vector[(1-compare).nonzero()]
         activation_from_time = tt.log(subvector.sum())
         return activation_from_time
-    activation_from_time, _ = theano.scan(fn=compute_activation,\
+    activation_from_time, _ = theano.scan(fn=compute_activation,
                                           sequences=scaled_time)
     # latency likelihood -- this is where pyactr is used
     pyactr_rt = actrmodel_latency(lf, le, decay, activation_from_time)
@@ -273,25 +274,32 @@ with lex_decision_with_bayes:
     # accuracy likelihood
     odds_reciprocal = tt.exp(-(activation_from_time - threshold)/noise)
     mu_prob = Deterministic('mu_prob', 1/(1 + odds_reciprocal))
-    prob_observed = Normal('prob_observed', mu=mu_prob, sd=0.01,\
+    prob_observed = Normal('prob_observed', mu=mu_prob, sd=0.01,
                            observed=ACCURACY)
 
 #with lex_decision_with_bayes:
-    #step = Metropolis()
-    #db = Text('../data/lex_dec_pyactr_no_imaginal')
-    #trace = sample(draws=60000, trace=db, njobs=1, step=step, init='auto')
+    #step = pm.SMC(parallel=True)
+    #trace = pm.sample(draws=5000, step=step, njobs=1, cores=25)
+
+#dump('../data/lex_dec_pyactr_no_imaginal', trace)
 
 with lex_decision_with_bayes:
     trace = load('../data/lex_dec_pyactr_no_imaginal')
 
-trace = trace[10500:]
+pm.diagnostics.gelman_rubin(trace)
+pm.traceplot(trace)
+plt.savefig('../figures/lex_dec_model_pyactr_no_imaginal_trace.eps')
+plt.savefig('../figures/lex_dec_model_pyactr_no_imaginal_trace.png')
+plt.savefig('../figures/lex_dec_model_pyactr_no_imaginal_trace.pdf')
+#plt.show()
 
-mu_rt = pd.DataFrame(trace['mu_rt'])
-yerr_rt = [(mu_rt.mean()-mu_rt.quantile(0.025)),\
+mu_rt = pd.DataFrame(trace['mu_rt'])*1000
+RT = RT*1000
+yerr_rt = [(mu_rt.mean()-mu_rt.quantile(0.025)),
            (mu_rt.quantile(0.975)-mu_rt.mean())]
 
 mu_prob = pd.DataFrame(trace['mu_prob'])
-yerr_prob = [(mu_prob.mean()-mu_prob.quantile(0.025)),\
+yerr_prob = [(mu_prob.mean()-mu_prob.quantile(0.025)),
              (mu_prob.quantile(0.975)-mu_prob.mean())]
 
 def generate_lex_dec_pyactr_no_imaginal_figure():
@@ -299,17 +307,17 @@ def generate_lex_dec_pyactr_no_imaginal_figure():
     fig.set_size_inches(5.5, 5.5)
     # plot 1: RTs
     ax1.errorbar(RT, mu_rt.mean(), yerr=yerr_rt, marker='o', linestyle='')
-    ax1.plot(np.linspace(500, 800, 10), np.linspace(500, 800, 10),\
+    ax1.plot(np.linspace(500, 800, 10), np.linspace(500, 800, 10),
              color='red', linestyle=':')
     ax1.set_title('Lex. dec. model (pyactr, no imaginal): RTs')
     ax1.set_xlabel('Observed RTs (ms)')
     ax1.set_ylabel('Predicted RTs (ms)')
     ax1.grid(b=True, which='minor', color='w', linewidth=1.0)
     # plot 2: probabilities
-    ax2.errorbar(ACCURACY, mu_prob.mean(), yerr=yerr_prob, marker='o',\
+    ax2.errorbar(ACCURACY, mu_prob.mean(), yerr=yerr_prob, marker='o',
                  linestyle='')
-    ax2.plot(np.linspace(50, 100, 10)/100,\
-             np.linspace(50, 100, 10)/100,\
+    ax2.plot(np.linspace(50, 100, 10)/100,
+             np.linspace(50, 100, 10)/100,
              color='red', linestyle=':')
     ax2.set_title('Lex. dec. model (pyactr, no imaginal): Prob.s')
     ax2.set_xlabel('Observed probabilities')
@@ -317,7 +325,36 @@ def generate_lex_dec_pyactr_no_imaginal_figure():
     ax2.grid(b=True, which='minor', color='w', linewidth=1.0)
     # clean up and save
     plt.tight_layout(pad=0.5, w_pad=0.2, h_pad=0.7)
-    plt.savefig('../figures/lex_dec_model_pyactr_no_imaginal.pgf')
+    plt.savefig('../figures/lex_dec_model_pyactr_no_imaginal.eps')
+    plt.savefig('../figures/lex_dec_model_pyactr_no_imaginal.png')
     plt.savefig('../figures/lex_dec_model_pyactr_no_imaginal.pdf')
+    #plt.show()
 
 generate_lex_dec_pyactr_no_imaginal_figure()
+
+decay_posterior = trace["decay"]
+decay_posterior.mean()
+pm.hpd(decay_posterior)
+
+threshold_posterior = trace["threshold"]
+threshold_posterior.mean()
+pm.hpd(threshold_posterior)
+
+noise_posterior = trace["noise"]
+noise_posterior.mean()
+pm.hpd(noise_posterior)
+
+latency_factor_posterior = trace["lf"]
+latency_factor_posterior.mean()
+pm.hpd(latency_factor_posterior)
+
+latency_exponent_posterior = trace["le"]
+latency_exponent_posterior.mean()
+pm.hpd(latency_exponent_posterior)
+
+pm.plot_posterior(trace, varnames=["decay", "threshold", "noise",
+                  "lf", "le"], figsize=(5.5, 3.5), text_size=10)
+plt.savefig('../figures/lex_dec_model_pyactr_no_imaginal_estimates.eps')
+plt.savefig('../figures/lex_dec_model_pyactr_no_imaginal_estimates.png')
+plt.savefig('../figures/lex_dec_model_pyactr_no_imaginal_estimates.pdf')
+#plt.show()

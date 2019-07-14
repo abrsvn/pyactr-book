@@ -19,6 +19,7 @@ from pymc3 import Model, Gamma, Normal, HalfNormal, Deterministic,\
 from pymc3.backends.base import merge_traces
 from pymc3.backends import Text
 from pymc3.backends.text import load
+from pymc3.backends.text import dump
 import theano
 import theano.tensor as tt
 from theano.compile.ops import as_op
@@ -30,7 +31,7 @@ warnings.filterwarnings("ignore")
 from parser_rules import parser
 from parser_dm import environment
 
-NDRAWS = 2000
+NDRAWS = 1500
 
 # Order of mean RTs below is:
 # (match, nothing, and), (match, nothing, if), (match, cataphora, and), (match, cataphora, if), (mismatch, cataphora, and), (mismatch, cataphora, if)
@@ -117,8 +118,10 @@ def run_exp(rank):
         if received_list[0] == -1:
             break
         parser.model_parameters["latency_exponent"] = received_list[0]
+        # print(received_list[0])
 
         run_time_in_s = reading_stim(SENTENCES[rank-1], DM) #run_time - time between key presses on the preposition "with"
+        # print(run_time_in_s)
         comm.Send([np.array([run_time_in_s]), MPI.FLOAT], dest=0, tag=1)
 
 
@@ -132,7 +135,7 @@ def actrmodel_latency(latency_exponent):
 
     sent_list = np.array([latency_exponent], dtype = np.float)
 
-    print("param values sent:", sent_list)
+    # print("param values sent:", sent_list)
 
     #get slaves to work
     for i in range(1, N_GROUPS):
@@ -144,7 +147,7 @@ def actrmodel_latency(latency_exponent):
         comm.Recv([received_list, MPI.FLOAT], i, 1)
         predicted_ms[i-1] = 1000 * received_list[0]
 
-    print("predicted RTs:", predicted_ms)
+    # print("predicted RTs:", predicted_ms)
 
     return predicted_ms
 
@@ -165,49 +168,51 @@ if rank == 0: #master
         mu_rt = Deterministic('mu_rt', pyactr_rt)
         rt_observed = Normal('rt_observed', mu=mu_rt, sd=30, observed=RT)
         # Compute posteriors
-        # step = Metropolis(parser_model.vars)
-        # db = Text('parser_model_2000_iterations')
-        # trace = sample(NDRAWS, step=step, trace=db, njobs=1, start={'le': np.array(0.045)}, tune=int(NDRAWS/10))
+        #step = pm.SMC()
+        #trace = sample(draws=NDRAWS, step=step, njobs=1)
 else:
     run_exp(rank)
 
+#dump('parser_model_'+str(NDRAWS)+'_iterations', trace)
+
 with parser_model:
-    trace = load('../../data/parser_model_2000_iterations')
-    trace = trace[int(NDRAWS/10):]
+    trace = load('../../data/parser_model_'+str(NDRAWS)+'_iterations')
 
-# traceplot(trace)
-# plt.savefig('parser_'+str(NDRAWS)+'_draws.pdf')
-# plt.savefig('parser_'+str(NDRAWS)+'_draws.png')
-# plt.savefig('parser_'+str(NDRAWS)+'_draws.pgf')
+pm.diagnostics.gelman_rubin(trace)
+traceplot(trace)
+plt.savefig('../../figures/parser_'+str(NDRAWS)+'_trace.eps')
+plt.savefig('../../figures/parser_'+str(NDRAWS)+'_trace.png')
+plt.savefig('../../figures/parser_'+str(NDRAWS)+'_trace.pdf')
+#plt.show()
 
-# mu_rt = pd.DataFrame(trace['mu_rt'])
-# yerr_rt = [(mu_rt.mean()-mu_rt.quantile(0.025)),\
-        # (mu_rt.quantile(0.975)-mu_rt.mean())]
+mu_rt = pd.DataFrame(trace['mu_rt'])
+yerr_rt = [(mu_rt.mean()-mu_rt.quantile(0.025)),\
+        (mu_rt.quantile(0.975)-mu_rt.mean())]
 
-# def generate_parser_model_figure():
-    # fig, ax1 = plt.subplots(ncols=1, nrows=1)
-    # fig.set_size_inches(5.5, 3.5)
-    # # plot 1: RTs
-    # ax1.errorbar(RT, mu_rt.mean(), yerr=yerr_rt, marker='o', linestyle='')
-    # ax1.plot(np.linspace(300, 500, 10), np.linspace(300, 500, 10),\
-             # color='red', linestyle=':')
-    # #ax1.set_title('Fan model: Observed vs. predicted RTs')
-    # ax1.set_title('')
-    # ax1.set_xlabel('Observed RTs (ms)')
-    # ax1.set_ylabel('Predicted RTs (ms)')
-    # ax1.grid(b=True, which='minor', color='w', linewidth=1.0)
-    # # clean up and save
-    # plt.tight_layout(pad=0.5, w_pad=0.2, h_pad=0.7)
-    # plt.savefig('parser_model_figure.pgf')
-    # plt.savefig('parser_model_figure.pdf')
+def generate_parser_model_figure():
+    fig, ax1 = plt.subplots(ncols=1, nrows=1)
+    fig.set_size_inches(5.5, 3.5)
+    # plot 1: RTs
+    ax1.errorbar(RT, mu_rt.mean(), yerr=yerr_rt, marker='o', linestyle='')
+    ax1.plot(np.linspace(300, 500, 10), np.linspace(300, 500, 10),\
+             color='red', linestyle=':')
+    #ax1.set_title('Fan model: Observed vs. predicted RTs')
+    ax1.set_title('')
+    ax1.set_xlabel('Observed RTs (ms)')
+    ax1.set_ylabel('Predicted RTs (ms)')
+    ax1.grid(b=True, which='minor', color='w', linewidth=1.0)
+    # clean up and save
+    plt.tight_layout(pad=0.5, w_pad=0.2, h_pad=0.7)
+    plt.savefig('../../figures/parser_model_figure.eps')
+    plt.savefig('../../figures/parser_model_figure.png')
+    plt.savefig('../../figures/parser_model_figure.pdf')
+    #plt.show()
 
-# generate_parser_model_figure()
+generate_parser_model_figure()
 
-# pm.plot_posterior(trace, varnames=["le", "mu_rt"],\
-                  # figsize=(11.5, 8.5), text_size=10)
-# plt.savefig('parser_model_estimates.pgf')
-# plt.savefig('parser_model_estimates.pdf')
-
-
-
-
+pm.plot_posterior(trace, varnames=["le", "mu_rt"],
+                  figsize=(11.5, 8.5), text_size=10)
+plt.savefig('../../figures/parser_model_estimates.eps')
+plt.savefig('../../figures/parser_model_estimates.png')
+plt.savefig('../../figures/parser_model_estimates.pdf')
+#plt.show()

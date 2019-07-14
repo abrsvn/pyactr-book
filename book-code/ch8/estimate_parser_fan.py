@@ -8,19 +8,19 @@ import re
 import sys
 import numpy as np
 import matplotlib as mpl
-mpl.use("pgf")
-pgf_with_pdflatex = {"text.usetex": True, "pgf.texsystem": "pdflatex",
-                     "pgf.preamble": [r"\usepackage{mathpazo}",
-                                      r"\usepackage[utf8x]{inputenc}",
-                                      r"\usepackage[T1]{fontenc}"],
-                     "axes.labelsize": 8,
-                     "font.family": "serif",
-                     "font.serif":["Palatino"],
-                     "font.size": 8,
-                     "legend.fontsize": 8,
-                     "xtick.labelsize": 8,
-                     "ytick.labelsize": 8}
-mpl.rcParams.update(pgf_with_pdflatex)
+# mpl.use("pgf")
+# pgf_with_pdflatex = {"text.usetex": True, "pgf.texsystem": "pdflatex",
+                     # "pgf.preamble": [r"\usepackage{mathpazo}",
+                                      # r"\usepackage[utf8x]{inputenc}",
+                                      # r"\usepackage[T1]{fontenc}"],
+                     # "axes.labelsize": 8,
+                     # "font.family": "serif",
+                     # "font.serif":["Palatino"],
+                     # "font.size": 8,
+                     # "legend.fontsize": 8,
+                     # "xtick.labelsize": 8,
+                     # "ytick.labelsize": 8}
+# mpl.rcParams.update(pgf_with_pdflatex)
 import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 import seaborn as sns
@@ -35,18 +35,16 @@ from pymc3 import Model, Gamma, Normal, HalfNormal, Deterministic,\
 from pymc3.backends.base import merge_traces
 from pymc3.backends import Text
 from pymc3.backends.text import load
+from pymc3.backends.text import dump
 import theano
 import theano.tensor as tt
 from theano.compile.ops import as_op
-from mpi4py import MPI
 
 import warnings
 warnings.filterwarnings("ignore")
 
 from parser_rules_fan import parser, recall_by_location
 from parser_dm_fan import environment
-
-NDRAWS = 5000
 
 # person-location pairs: 3-3, 3-2, 3-1, 2-3, 2-2, 2-1, 1-3, 1-2; 1-1
 # (from Anderson 1974, in ms)
@@ -97,6 +95,7 @@ def run_fan_exp():
             triggers='space', times=20)
 
             parser.model_parameters["motor_prepared"] = True
+            parser.model_parameters["emma_noise"] = False
 
             while True:
                 try:
@@ -146,29 +145,33 @@ fan_model = Model()
 
 with fan_model:
     # Priors
-    buffer_spreading_activation = HalfNormal("bsa", sd=3)
-    strength_of_association = HalfNormal("soa", sd=6)
-    rule_firing = HalfNormal("rf", sd=0.04)
-    latency_factor = HalfNormal("lf", sd=0.3)
+    buffer_spreading_activation = HalfNormal("bsa", sd=2)
+    strength_of_association = HalfNormal("soa", sd=4)
+    rule_firing = HalfNormal("rf", sd=0.03)
+    latency_factor = HalfNormal("lf", sd=0.2)
     # Likelihood
-    pyactr_rt = actrmodel_latency(rule_firing, latency_factor,\
-                                  buffer_spreading_activation,\
+    pyactr_rt = actrmodel_latency(rule_firing, latency_factor,
+                                  buffer_spreading_activation,
                                   strength_of_association)
     mu_rt = Deterministic('mu_rt', pyactr_rt)
-    rt_observed = Normal('rt_observed', mu=mu_rt, sd=30, observed=RT)
+    rt_observed = Normal('rt_observed', mu=mu_rt, sd=10, observed=RT)
+
+#with fan_model:
     # Compute posteriors
-    # step = Metropolis(fan_model.vars)
-    # db = Text('fan_5000_draws')
-    #trace = sample(NDRAWS, step=step, trace=db, njobs=1, init='auto', tune=500)
+    #step = pm.SMC(parallel=True)
+    #trace = pm.sample(draws=5000, step=step, njobs=1, cores=50)
+
+#dump('../../data/fan_5000_draws', trace)
 
 with fan_model:
     trace = load('../../data/fan_5000_draws')
-    trace = trace[500:]
 
+pm.diagnostics.gelman_rubin(trace)
 traceplot(trace)
-plt.savefig('fan_5000_draws.png')
-plt.savefig('fan_5000_draws.pgf')
-plt.savefig('fan_5000_draws.pdf')
+plt.savefig('../../figures/fan_5000_trace.eps')
+plt.savefig('../../figures/fan_5000_trace.png')
+plt.savefig('../../figures/fan_5000_trace.pdf')
+#plt.show()
 
 mu_rt = pd.DataFrame(trace['mu_rt'])
 yerr_rt = [(mu_rt.mean()-mu_rt.quantile(0.025)),\
@@ -188,13 +191,16 @@ def generate_fan_model_figure():
     ax1.grid(b=True, which='minor', color='w', linewidth=1.0)
     # clean up and save
     plt.tight_layout(pad=0.5, w_pad=0.2, h_pad=0.7)
-    plt.savefig('../../figures/fan_model_figure.pgf')
+    plt.savefig('../../figures/fan_model_figure.eps')
+    plt.savefig('../../figures/fan_model_figure.png')
     plt.savefig('../../figures/fan_model_figure.pdf')
+    #plt.show()
 
 generate_fan_model_figure()
 
-pm.plot_posterior(trace, varnames=["bsa", "soa", "rf", "lf"],\
+pm.plot_posterior(trace, varnames=["bsa", "soa", "rf", "lf"],
                   figsize=(5.5, 3.5), text_size=10)
-plt.savefig('../../figures/fan_model_estimates.pgf')
+plt.savefig('../../figures/fan_model_estimates.eps')
+plt.savefig('../../figures/fan_model_estimates.png')
 plt.savefig('../../figures/fan_model_estimates.pdf')
-
+#plt.show()
