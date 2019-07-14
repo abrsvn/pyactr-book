@@ -50,7 +50,7 @@ actr.chunktype("word", "form cat")
 
 parser = actr.ACTRModel(environment, subsymbolic=True, retrieval_threshold=-20,
                         decay = 0.5, latency_factor=0.15, latency_exponent=1,
-                        rule_firing=0.05, motor_prepared=True, automatic_visual_search=False)
+                        rule_firing=0.05, motor_prepared=True, emma_noise=False, automatic_visual_search=False)
 temp_dm = {}
 
 words = stimuli_csv.groupby('word', sort=False)
