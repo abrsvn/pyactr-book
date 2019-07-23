@@ -130,11 +130,11 @@ def generate_ebbinghaus_data_figure_2():
     ax1.set_yscale('log', basey=10)
     ax1.grid(b=True, which='minor', color='w', linewidth=1.0)
     # plot 2
-    yerr=[np.exp(mu.mean(axis=0))-np.exp(pm.hpd(mu)[:,0]),\
+    yerr=[np.exp(mu.mean(axis=0))-np.exp(pm.hpd(mu)[:,0]),
           np.exp(pm.hpd(mu)[:,1])-np.exp(mu.mean(axis=0))]
-    ax2.errorbar(savings, np.exp(mu.mean(axis=0)), yerr=yerr,\
+    ax2.errorbar(savings, np.exp(mu.mean(axis=0)), yerr=yerr,
                  marker='o', linestyle='')
-    ax2.plot(np.linspace(0, 100, 10), np.linspace(0, 100, 10),\
+    ax2.plot(np.linspace(0, 100, 10), np.linspace(0, 100, 10),
             color='red', linestyle=':')
     ax2.set_title('Exponential model: Observed vs. predicted savings')
     ax2.set_xlabel('Observed savings (\\%)')
@@ -182,11 +182,11 @@ def generate_ebbinghaus_data_figure_3():
     ax1.set_yscale('log', basey=10)
     ax1.grid(b=True, which='minor', color='w', linewidth=1.0)
     # plot 2
-    yerr=[np.exp(mu.mean(axis=0))-np.exp(pm.hpd(mu)[:,0]),\
+    yerr=[np.exp(mu.mean(axis=0))-np.exp(pm.hpd(mu)[:,0]),
           np.exp(pm.hpd(mu)[:,1])-np.exp(mu.mean(axis=0))]
-    ax2.errorbar(savings, np.exp(mu.mean(axis=0)), yerr=yerr,\
+    ax2.errorbar(savings, np.exp(mu.mean(axis=0)), yerr=yerr,
                  marker='o', linestyle='')
-    ax2.plot(np.linspace(0, 100, 10), np.linspace(0, 100, 10),\
+    ax2.plot(np.linspace(0, 100, 10), np.linspace(0, 100, 10),
              color='red', linestyle=':')
     ax2.set_title('Power law model: Observed vs. predicted savings')
     ax2.set_xlabel('Observed savings (\\%)')
@@ -209,7 +209,7 @@ def base_activation(pres_times, moments):
             np.sum(1/np.sqrt(moments[idx] - past_pres_times))
     non_zero_activations = np.not_equal(base_act, 0)
     base_act[non_zero_activations] = \
-        np.log(base_act[np.not_equal(base_act, 0)])
+        np.log(base_act[non_zero_activations])
     return base_act
 
 pres_times = np.linspace(0, 5000, 5)/1000
