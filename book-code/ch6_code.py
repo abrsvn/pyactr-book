@@ -13,19 +13,19 @@ ebbinghaus_data.describe()
 # settings for data visualization
 import matplotlib as mpl
 # mpl.use("pgf")
-pgf_with_pdflatex = {"text.usetex": True, "pgf.texsystem": "pdflatex",
-                     "pgf.preamble": [r"\usepackage{mathpazo}",
-                                      r"\usepackage[utf8x]{inputenc}",
-                                      r"\usepackage[T1]{fontenc}",
-                                      r"\usepackage{amsmath}"],
-                     "axes.labelsize": 8,
-                     "font.family": "serif",
-                     "font.serif":["Palatino"],
-                     "font.size": 8,
-                     "legend.fontsize": 8,
-                     "xtick.labelsize": 8,
-                     "ytick.labelsize": 8}
-mpl.rcParams.update(pgf_with_pdflatex)
+# pgf_with_pdflatex = {"text.usetex": True, "pgf.texsystem": "pdflatex",
+                     # "pgf.preamble": [r"\usepackage{mathpazo}",
+                                      # r"\usepackage[utf8x]{inputenc}",
+                                      # r"\usepackage[T1]{fontenc}",
+                                      # r"\usepackage{amsmath}"],
+                     # "axes.labelsize": 8,
+                     # "font.family": "serif",
+                     # "font.serif":["Palatino"],
+                     # "font.size": 8,
+                     # "legend.fontsize": 8,
+                     # "xtick.labelsize": 8,
+                     # "ytick.labelsize": 8}
+# mpl.rcParams.update(pgf_with_pdflatex)
 import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 import seaborn as sns
