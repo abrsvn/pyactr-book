@@ -13,19 +13,19 @@ ebbinghaus_data.describe()
 # settings for data visualization
 import matplotlib as mpl
 # mpl.use("pgf")
-# pgf_with_pdflatex = {"text.usetex": True, "pgf.texsystem": "pdflatex",
-                     # "pgf.preamble": [r"\usepackage{mathpazo}",
-                                      # r"\usepackage[utf8x]{inputenc}",
-                                      # r"\usepackage[T1]{fontenc}",
-                                      # r"\usepackage{amsmath}"],
-                     # "axes.labelsize": 8,
-                     # "font.family": "serif",
-                     # "font.serif":["Palatino"],
-                     # "font.size": 8,
-                     # "legend.fontsize": 8,
-                     # "xtick.labelsize": 8,
-                     # "ytick.labelsize": 8}
-# mpl.rcParams.update(pgf_with_pdflatex)
+pgf_with_pdflatex = {"text.usetex": True, "pgf.texsystem": "pdflatex",
+                     "pgf.preamble": [r"\usepackage{mathpazo}",
+                                      r"\usepackage[utf8x]{inputenc}",
+                                      r"\usepackage[T1]{fontenc}",
+                                      r"\usepackage{amsmath}"],
+                     "axes.labelsize": 8,
+                     "font.family": "serif",
+                     "font.serif":["Palatino"],
+                     "font.size": 8,
+                     "legend.fontsize": 8,
+                     "xtick.labelsize": 8,
+                     "ytick.labelsize": 8}
+mpl.rcParams.update(pgf_with_pdflatex)
 import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 import seaborn as sns
@@ -123,16 +123,16 @@ def generate_ebbinghaus_data_figure_2():
     fig.set_size_inches(5.5, 4.5)
     # plot 1
     ax1.plot(delay, savings, marker='o', linestyle='--')
-    ax1.plot(delay, np.exp(mu.mean(axis=0)), color='red', linestyle='-')
+    ax1.plot(delay, np.median(np.exp(mu), axis=0), color='red', linestyle='-')
     ax1.set_title('b. Log performance (blue) and exponential model estimates (red)')
     ax1.set_xlabel('Delay (hours)')
     ax1.set_ylabel('Savings (log \\%)')
     ax1.set_yscale('log', basey=10)
     ax1.grid(b=True, which='minor', color='w', linewidth=1.0)
     # plot 2
-    yerr=[np.exp(mu.mean(axis=0))-np.exp(pm.hpd(mu)[:,0]),
-          np.exp(pm.hpd(mu)[:,1])-np.exp(mu.mean(axis=0))]
-    ax2.errorbar(savings, np.exp(mu.mean(axis=0)), yerr=yerr,
+    yerr=[np.median(np.exp(mu), axis=0)-pm.hpd(np.exp(mu))[:,0],
+          pm.hpd(np.exp(mu))[:,1]-np.median(np.exp(mu), axis=0)]
+    ax2.errorbar(savings, np.median(np.exp(mu), axis=0), yerr=yerr,
                  marker='o', linestyle='')
     ax2.plot(np.linspace(0, 100, 10), np.linspace(0, 100, 10),
             color='red', linestyle=':')
@@ -174,7 +174,7 @@ def generate_ebbinghaus_data_figure_3():
     fig.set_size_inches(5.5, 4.5)
     # plot 1
     ax1.plot(delay, savings, marker='o', linestyle='--')
-    ax1.plot(delay, np.exp(mu.mean(axis=0)), color='red', linestyle='-')
+    ax1.plot(delay, np.median(np.exp(mu), axis=0), color='red', linestyle='-')
     ax1.set_title('c. Log-log plot (blue) and power law model estimates (red)')
     ax1.set_xlabel('Delay (log hours)')
     ax1.set_xscale('log', basex=10)
@@ -182,9 +182,9 @@ def generate_ebbinghaus_data_figure_3():
     ax1.set_yscale('log', basey=10)
     ax1.grid(b=True, which='minor', color='w', linewidth=1.0)
     # plot 2
-    yerr=[np.exp(mu.mean(axis=0))-np.exp(pm.hpd(mu)[:,0]),
-          np.exp(pm.hpd(mu)[:,1])-np.exp(mu.mean(axis=0))]
-    ax2.errorbar(savings, np.exp(mu.mean(axis=0)), yerr=yerr,
+    yerr=[np.median(np.exp(mu), axis=0)-pm.hpd(np.exp(mu))[:,0],
+          pm.hpd(np.exp(mu))[:,1]-np.median(np.exp(mu), axis=0)]
+    ax2.errorbar(savings, np.median(np.exp(mu), axis=0), yerr=yerr,
                  marker='o', linestyle='')
     ax2.plot(np.linspace(0, 100, 10), np.linspace(0, 100, 10),
              color='red', linestyle=':')
