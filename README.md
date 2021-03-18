@@ -8,15 +8,12 @@ This includes the (frozen) version of pyactr for the "Computational Cognitive Mo
 Running the code
 ---------------------------
 
-Go to the folder [notebooks](https://github.com/abrsvn/pyactr-book/tree/master/notebooks)
-.
+Go to the folder [notebooks](https://github.com/abrsvn/pyactr-book/tree/master/notebooks), open them in Google Colab by clicking on the `Open In Colab` badge at the top of the notebook and enjoy reading and running the code interactively.
 
 - the first two notebooks provide a basic introduction to Jupyter notebooks and Python3
-- the remainder of the notebooks cover chapters 2 through 7 of the book.
+- the remainder of the notebooks cover chapters 2 through 7 of the book
 
-You can open the notebooks in Google Colab by clicking on the `Open In Colab` badge at the top of the notebook.
-
-Some images might not display correctly in Google Colab, and you'll have to set up access to your google drive if you want to load/save files (e.g., data, models, figures etc.), but you should be able to go through quite a number of notebooks by just opening them in Google Colab and running the code interactively.
+Some images might not display correctly in Google Colab, and you'll have to set up access to your google drive if you want to load/save files (e.g., data, models, figures etc.), but you should be able to go through a good number of notebooks by just opening them in Google Colab and working through them interactively.
 
 **Old** instructions for running the code (preserved below for now)
 ---------------------------
