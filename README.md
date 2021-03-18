@@ -8,7 +8,8 @@ This includes the (frozen) version of pyactr for the "Computational Cognitive Mo
 Running the code
 ---------------------------
 
-Go to the folder <a href="https://github.com/abrsvn/pyactr-book/tree/master/notebooks">notebooks</a>, and open the notebooks there.
+Go to the folder [notebooks](https://github.com/abrsvn/pyactr-book/tree/master/notebooks)
+.
 
 - the first two notebooks provide a basic introduction to Jupyter notebooks and Python3
 - the remainder of the notebooks cover chapters 2 through 7 of the book.
