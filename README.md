@@ -3,17 +3,25 @@ pyactr-book
 
 Python package to create and run ACT-R cognitive models.
 
-This includes the (frozen) version of pyactr for the "Computational Cognitive Modeling and Linguistic Theory" book, with all the book code included in the folder book-code.
+This includes the (frozen) version of pyactr for the ["Computational Cognitive Modeling and Linguistic Theory" book](https://link.springer.com/book/10.1007/978-3-030-31846-8), with all the book code included in the folder book-code.
+
+The book is available open-access at [here](https://link.springer.com/book/10.1007/978-3-030-31846-8) or by clicking on the link above.
 
 Running the code
 ---------------------------
 
-Go to the folder [notebooks](https://github.com/abrsvn/pyactr-book/tree/master/notebooks), open them in Google Colab by clicking on the `Open In Colab` badge at the top of the notebook and enjoy reading and running the code interactively.
+Go to the folder [notebooks](https://github.com/abrsvn/pyactr-book/tree/master/notebooks), then:
 
-- the first two notebooks provide a basic introduction to Jupyter notebooks and Python3
-- the remainder of the notebooks cover chapters 2 through 7 of the book
+- click on the notebook you want to work through
+- wait (or refresh) until github renders it for you
+- open the notebook in Google Colab by clicking on the `Open In Colab` badge at the top of the notebook
+- enjoy reading and running the code interactively.
 
-Some images might not display correctly in Google Colab, and you'll have to set up access to your google drive if you want to load/save files (e.g., data, models, figures etc.), but you should be able to go through a good number of notebooks by just opening them in Google Colab and working through them interactively.
+The first two notebooks provide a basic introduction to Jupyter notebooks and Python3, feel free to skip them if you're familiar with them.
+
+The remainder of the notebooks cover **Chapters 2 through 7** of the ["Computational Cognitive Modeling and Linguistic Theory" book](https://link.springer.com/book/10.1007/978-3-030-31846-8).
+
+Some notebook images might not display correctly in Google Colab, and you'll have to set up access to your google drive if you want to load/save files (e.g., data, models, figures etc.), but you should be able to go through a good number of notebooks by just opening them in Google Colab and working through them interactively.
 
 **Old** instructions for running the code (preserved below for now)
 ---------------------------
