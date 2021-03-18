@@ -5,7 +5,7 @@ Python package to create and run ACT-R cognitive models.
 
 This includes the (frozen) version of pyactr for the ["Computational Cognitive Modeling and Linguistic Theory" book](https://link.springer.com/book/10.1007/978-3-030-31846-8), with all the book code included in the folder book-code.
 
-The book is available open-access at [here](https://link.springer.com/book/10.1007/978-3-030-31846-8) or by clicking on the link above.
+The book is available open-access [here](https://link.springer.com/book/10.1007/978-3-030-31846-8) or by clicking on the link above.
 
 Running the code
 ---------------------------
