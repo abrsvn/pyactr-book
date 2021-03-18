@@ -17,7 +17,7 @@ Go to the folder [notebooks](https://github.com/abrsvn/pyactr-book/tree/master/n
 - open the notebook in Google Colab by clicking on the `Open In Colab` badge at the top of the notebook
 - enjoy reading and running the code interactively.
 
-The first two notebooks provide a basic introduction to Jupyter notebooks and Python3, feel free to skip them if you're familiar with them.
+The first two notebooks provide a basic introduction to Jupyter notebooks and Python3, skip them if you have basic familiarity with notebooks and Python.
 
 The remainder of the notebooks cover **Chapters 2 through 7** of the ["Computational Cognitive Modeling and Linguistic Theory" book](https://link.springer.com/book/10.1007/978-3-030-31846-8).
 
