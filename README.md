@@ -13,8 +13,8 @@ Running the code
 Go to the folder [notebooks](https://github.com/abrsvn/pyactr-book/tree/master/notebooks), then:
 
 - click on the notebook you want to work through
-- wait (or refresh) until github renders it for you
-- open the notebook in Google Colab by clicking on the `Open In Colab` badge at the top of the notebook
+- wait (or refresh) until github renders it for you; if this doesn't work (sometimes github has issues rendering notebooks), download the corresponding pdf and open it locally on your computer
+- open the notebook in Google Colab by clicking on the `Open In Colab` badge at the top of the notebook (this works for both the rendered ipynb file or the pdf file opened locally on your computer)
 - enjoy reading and running the code interactively.
 
 The first two notebooks provide a basic introduction to Jupyter notebooks and Python3 based on various resources; feel free to skip them if you've worked with python and notebooks before. The remainder of the notebooks cover **Chapters 2 through 7** of the ["Computational Cognitive Modeling and Linguistic Theory" book](https://link.springer.com/book/10.1007/978-3-030-31846-8).
