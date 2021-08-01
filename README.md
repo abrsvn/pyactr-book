@@ -101,19 +101,9 @@ The current list of notebooks is provided below; click on the links to open the 
 <!--[Alternative]-->
 <!--To get started, you should consider a web-based service for Python3 like PythonAnywhere. In this type of services, computation is hosted on separate servers and you don't have to install anything on your computer (of course, you'll need internet access). pyactr is a library for Python3, and you will have to install it on the web-based Python3 service. If you find that you like working with Python3 and pyactr, you can install them on your computer at a later point, together with a good text editor for coding -- Sublime, gedit, Vim, Emacs etc. (not Word) are suitable editor for programming. Alternatively,  you can install an integrated desktop environment (IDE) for Python -- a common choice is anaconda, which comes with a variety of ways of working interactively with Python (IDE with Spyder as the editor, ipython notebooks, nowadays known as jupyter notebooks etc.). But none of this is required to run pyactr and the code in this book.-->
 
-<!--Using PythonAnywhere:-->
-    a. Go to www.pythonanywhere.com and sign up there.
-    b. You'll receive a confirmation e-mail. Confirm your account / e-mail address.
-    c. Log into your account on www.pythonanywhere.com.
-    d. Click on Bash (below ``Start a new Console'').
-    e. In Bash, type:
-<!--$ pip3 install --user pyactr-->
+<!--Using PythonAnywhere: a. Go to www.pythonanywhere.com and sign up there. b. You'll receive a confirmation e-mail. Confirm your account / e-mail address. c. Log into your account on www.pythonanywhere.com. d. Click on Bash (below ``Start a new Console''). e. In Bash, type: $ pip3 install --user pyactr-->
 
-<!--This will install pyactr in your Python account (not on your computer).-->
-
-    f. Go back to Consoles. Start Python by clicking on any version 3.3 or higher.
-    g. A console should open. Type:
-<!--import pyactr-->
+<!--This will install pyactr in your Python account (not on your computer). f. Go back to Consoles. Start Python by clicking on any version 3.3 or higher. g. A console should open. Type: import pyactr-->
 
 <!--If no errors appear, you are set. You might get a warning about the lack of tkinter support and that the simulation GUI is set to false. You can ignore this message.-->
 
